@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: net.clementlevallois.scientometricsoverlaytoolkit
+OpenIDE-Module-Localizing-Bundle: net/clementlevallois/scientometricsoverlaytoolkit/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+
