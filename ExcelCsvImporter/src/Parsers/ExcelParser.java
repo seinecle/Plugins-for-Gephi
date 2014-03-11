@@ -77,6 +77,7 @@ public class ExcelParser {
     String sheetName;
     boolean headersPresent;
     Integer columnCount;
+    Multiset<String> nodes = HashMultiset.create();
     Multiset<String> nodesFirst = HashMultiset.create();
     Multiset<String> nodesSecond = HashMultiset.create();
     Multiset<String> edges = HashMultiset.create();
@@ -205,13 +206,11 @@ public class ExcelParser {
                     }
                 }
 
-
             }
             lineCounter++;
 
             String[] firstAgentSplit;
             String[] secondAgentSplit;
-
 
             if (firstDelimiter != null) {
                 firstAgentSplit = firstAgent.trim().split(firstDelimiter);
@@ -220,7 +219,9 @@ public class ExcelParser {
                 firstAgentSplit[0] = firstAgent;
             }
             for (String node : firstAgentSplit) {
-                nodesFirst.add(node.trim());
+                node = node.trim();
+                nodesFirst.add(node);
+                nodes.add(node);
             }
 
             if (!oneTypeOfAgent) {
@@ -232,56 +233,68 @@ public class ExcelParser {
                     secondAgentSplit[0] = secondAgent;
                 }
                 for (String node : secondAgentSplit) {
-                    nodesSecond.add(node.trim());
+                    node = node.trim();
+                    nodesSecond.add(node);
+                    nodes.add(node);
                 }
             } else {
                 secondAgentSplit = null;
             }
 
-            String[] both = ArrayUtils.addAll(firstAgentSplit, secondAgentSplit);
-            //let's find all connections between all the tags for this picture
+            //let's find all connections between all the agents in this row
             Utils usefulTools = new Utils();
-            List<String> connections = usefulTools.getListOfLinks(both,MyFileImporter.removeSelfLoops);
-            edges.addAll(connections);
-        }
 
+            if (!MyFileImporter.innerLinksIncluded) {
+                for (String x : firstAgentSplit) {
+                    for (String xx : secondAgentSplit) {
+                        if (!(MyFileImporter.removeSelfLoops & x.equals(xx))) {
+                            edges.add(x.trim() + "|" + xx.trim());
+                        }
+                    }
+                }
+            } else {
+                List<String> connections;
+                String[] both = ArrayUtils.addAll(firstAgentSplit, secondAgentSplit);
+                connections = usefulTools.getListOfLinks(both, MyFileImporter.removeSelfLoops);
+                edges.addAll(connections);
+            }
+        }
 
         NodeDraft node;
         AttributeTable atNodes = container.getAttributeModel().getNodeTable();
         AttributeColumn acFrequency = atNodes.addColumn("frequency", AttributeType.INT);
         AttributeColumn acType = atNodes.addColumn("type", AttributeType.STRING);
+        StringBuilder type;
+        boolean atLeastOneType = false;
 
-        for (String n : nodesFirst.elementSet()) {
+        for (String n : nodes.elementSet()) {
+            type = new StringBuilder();
             node = container.factory().newNodeDraft();
             node.setId(n);
             node.setLabel(n);
-            node.addAttributeValue(acFrequency, nodesFirst.count(n));
-            node.addAttributeValue(acType, MyFileImporter.getFirstConnectedAgent());
+            node.addAttributeValue(acFrequency, nodes.count(n));
+            if (nodesFirst.contains(n)) {
+                type.append(MyFileImporter.getFirstConnectedAgent());
+                atLeastOneType = true;
+            }
+            if (nodesSecond.contains(n)) {
+                if (atLeastOneType) {
+                    type.append("; ");
+                }
+                type.append(MyFileImporter.getSecondConnectedAgent());
+            }
+            node.addAttributeValue(acType, type);
             container.addNode(node);
-        }
-
-        for (String n : nodesSecond.elementSet()) {
-            node = container.factory().newNodeDraft();
-            node.setId(n);
-            node.setLabel(n);
-            node.addAttributeValue(acFrequency, nodesSecond.count(n));
-            node.addAttributeValue(acType, MyFileImporter.getSecondConnectedAgent());
-            container.addNode(node);
-        }
+       }
 
         //loop for edges
         Integer idEdge = 0;
         EdgeDraft edge;
         for (String e : edges.elementSet()) {
-            System.out.println("edge: " + e);
+//            System.out.println("edge: " + e);
 
             String sourceNode = e.split("\\|")[0];
             String targetNode = e.split("\\|")[1];
-            if (!MyFileImporter.innerLinksIncluded) {
-                if ((nodesFirst.contains(sourceNode) & nodesFirst.contains(targetNode)) || (nodesSecond.contains(sourceNode) & nodesSecond.contains(targetNode))) {
-                    continue;
-                }
-            }
             edge = container.factory().newEdgeDraft();
             idEdge = idEdge + 1;
             edge.setSource(container.getNode(sourceNode));

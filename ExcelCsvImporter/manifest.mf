@@ -1,6 +1,7 @@
-Manifest-Version: 1.0
+Manifest-Version: 1.1.1
 AutoUpdate-Show-In-Client: true
-OpenIDE-Module: ExcelCsvImporter
+OpenIDE-Module: ExcelCsvImporter/1
+OpenIDE-Module-Implementation-Version: 1
 OpenIDE-Module-Localizing-Bundle: ExcelCsvImporter/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Specification-Version: 1
 

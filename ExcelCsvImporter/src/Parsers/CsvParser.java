@@ -74,6 +74,7 @@ public class CsvParser {
     public CsvReader csvReader;
     String textDelimiter;
     String fieldDelimiter;
+    Multiset<String> nodes = HashMultiset.create();
     Multiset<String> nodesFirst = HashMultiset.create();
     Multiset<String> nodesSecond = HashMultiset.create();
     Multiset<String> edges = HashMultiset.create();
@@ -117,9 +118,7 @@ public class CsvParser {
 
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        } 
     }
 
     public String[] getHeaders() throws IOException {
@@ -181,7 +180,6 @@ public class CsvParser {
             String[] firstAgentSplit;
             String[] secondAgentSplit;
 
-
             if (firstDelimiter != null) {
                 firstAgentSplit = firstAgent.trim().split(firstDelimiter);
             } else {
@@ -189,7 +187,9 @@ public class CsvParser {
                 firstAgentSplit[0] = firstAgent;
             }
             for (String node : firstAgentSplit) {
-                nodesFirst.add(node.trim());
+                node = node.trim();
+                nodesFirst.add(node);
+                nodes.add(node);
             }
 
             if (!oneTypeOfAgent) {
@@ -201,56 +201,69 @@ public class CsvParser {
                     secondAgentSplit[0] = secondAgent;
                 }
                 for (String node : secondAgentSplit) {
-                    nodesSecond.add(node.trim());
+                    node = node.trim();
+                    nodesSecond.add(node);
+                    nodes.add(node);
                 }
             } else {
                 secondAgentSplit = null;
             }
 
-            String[] both = ArrayUtils.addAll(firstAgentSplit, secondAgentSplit);
-            //let's find all connections between all the tags for this picture
+            //let's find all connections between all the agents in this row
             Utils usefulTools = new Utils();
-            List<String> connections = usefulTools.getListOfLinks(both,MyFileImporter.removeSelfLoops);
-            edges.addAll(connections);
-        }
 
+            if (!MyFileImporter.innerLinksIncluded) {
+                for (String x : firstAgentSplit) {
+                    for (String xx : secondAgentSplit) {
+                        if (!(MyFileImporter.removeSelfLoops & x.equals(xx))) {
+                            edges.add(x.trim() + "|" + xx.trim());
+                        }
+                    }
+                }
+            } else {
+                List<String> connections;
+                String[] both = ArrayUtils.addAll(firstAgentSplit, secondAgentSplit);
+                connections = usefulTools.getListOfLinks(both, MyFileImporter.removeSelfLoops);
+                edges.addAll(connections);
+            }
+
+        }
 
         NodeDraft node;
         AttributeTable atNodes = container.getAttributeModel().getNodeTable();
         AttributeColumn acFrequency = atNodes.addColumn("frequency", AttributeType.INT);
         AttributeColumn acType = atNodes.addColumn("type", AttributeType.STRING);
-
-        for (String n : nodesFirst.elementSet()) {
+        StringBuilder type;
+        boolean atLeastOneType = false;
+        
+        for (String n : nodes.elementSet()) {
             node = container.factory().newNodeDraft();
             node.setId(n);
             node.setLabel(n);
-            node.addAttributeValue(acFrequency, nodesFirst.count(n));
-            node.addAttributeValue(acType, MyFileImporter.getFirstConnectedAgent());
+            type = new StringBuilder();
+            node.addAttributeValue(acFrequency, nodes.count(n));
+            if (nodesFirst.contains(n)) {
+                type.append(MyFileImporter.getFirstConnectedAgent());
+                atLeastOneType = true;
+            }
+            if (nodesSecond.contains(n)) {
+                if (atLeastOneType) {
+                    type.append("; ");
+                }
+                type.append(MyFileImporter.getSecondConnectedAgent());
+            }
+            node.addAttributeValue(acType, type);
             container.addNode(node);
-        }
-
-        for (String n : nodesSecond.elementSet()) {
-            node = container.factory().newNodeDraft();
-            node.setId(n);
-            node.setLabel(n);
-            node.addAttributeValue(acFrequency, nodesSecond.count(n));
-            node.addAttributeValue(acType, MyFileImporter.getSecondConnectedAgent());
-            container.addNode(node);
-        }
+       }
 
         //loop for edges
         Integer idEdge = 0;
         EdgeDraft edge;
         for (String e : edges.elementSet()) {
-            System.out.println("edge: " + e);
 
             String sourceNode = e.split("\\|")[0].trim();
             String targetNode = e.split("\\|")[1].trim();
-            if (!MyFileImporter.innerLinksIncluded) {
-                if ((nodesFirst.contains(sourceNode) & nodesFirst.contains(targetNode)) || (nodesSecond.contains(sourceNode) & nodesSecond.contains(targetNode))) {
-                    continue;
-                }
-            }
+
             edge = container.factory().newEdgeDraft();
             idEdge = idEdge + 1;
             edge.setSource(container.getNode(sourceNode));

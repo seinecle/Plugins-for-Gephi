@@ -100,6 +100,7 @@ public class Panel5Wizard implements WizardDescriptor.Panel<WizardDescriptor>, P
     public void readSettings(WizardDescriptor data) {
         ((Panel5) getComponent()).jLabel3.setText(MyFileImporter.getFirstConnectedAgent());
         ((Panel5) getComponent()).jLabel5.setText(MyFileImporter.getSecondConnectedAgent());
+        MyFileImporter.innerLinksIncluded = Panel4.jCheckBoxInnerLinks.isSelected();
 
     }
 
