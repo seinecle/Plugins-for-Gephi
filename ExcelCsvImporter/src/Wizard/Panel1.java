@@ -31,6 +31,7 @@ public class Panel1 extends javax.swing.JPanel {
     private String[] headers;
     public static String selectedFileDelimiter;
     public static String selectedSheet;
+    public static ExcelParser excelParserTest;
 
     public Panel1() {
         initComponents();
@@ -182,6 +183,8 @@ public class Panel1 extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonSelectFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelectFileActionPerformed
+        excelParserTest = new ExcelParser();
+        excelParserTest.testDynamics();
         try {
             f = new File(new File(".").getCanonicalPath());
             JFileChooser chooser = new JFileChooser();

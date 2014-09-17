@@ -9,10 +9,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 import javax.swing.event.ChangeListener;
 import Controller.MyFileImporter;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 
 /*
  Copyright 2008-2013 Clement Levallois
@@ -68,6 +71,7 @@ public class Panel4Wizard implements WizardDescriptor.Panel<WizardDescriptor>, P
         if (component == null) {
             Panel4 panel4 = new Panel4();
             component = panel4;
+
         }
         return component;
     }
@@ -98,11 +102,8 @@ public class Panel4Wizard implements WizardDescriptor.Panel<WizardDescriptor>, P
 
     @Override
     public void readSettings(WizardDescriptor data) {
-        String firstAgent = MyFileImporter.getFirstConnectedAgent();
-        String secondAgent = MyFileImporter.getSecondConnectedAgent();
-        ((Panel4) getComponent()).jCheckBoxInnerLinks.setText("create links between " + firstAgent + " agents and links between " + secondAgent + " agents.");
-        MyFileImporter.firstConnectorDelimiter = Panel3.firstConnectorDelimiter;
-        MyFileImporter.secondConnectorDelimiter = Panel3.secondConnectorDelimiter;
+
+        ((Panel4) getComponent()).getjList1().setModel(MyFileImporter.getListModelHeaders());
 
     }
 

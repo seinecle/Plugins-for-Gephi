@@ -66,8 +66,8 @@ public class Panel5Wizard implements WizardDescriptor.Panel<WizardDescriptor>, P
     @Override
     public Component getComponent() {
         if (component == null) {
-            Panel5 panel5 = new Panel5();
-            component = panel5;
+            Panel5 panel4 = new Panel5();
+            component = panel4;
         }
         return component;
     }
@@ -98,9 +98,13 @@ public class Panel5Wizard implements WizardDescriptor.Panel<WizardDescriptor>, P
 
     @Override
     public void readSettings(WizardDescriptor data) {
-        ((Panel5) getComponent()).jLabel3.setText(MyFileImporter.getFirstConnectedAgent());
-        ((Panel5) getComponent()).jLabel5.setText(MyFileImporter.getSecondConnectedAgent());
-        MyFileImporter.innerLinksIncluded = Panel4.jCheckBoxInnerLinks.isSelected();
+        MyFileImporter.getTimeField();
+
+        String firstAgent = MyFileImporter.getFirstConnectedAgent();
+        String secondAgent = MyFileImporter.getSecondConnectedAgent();
+        ((Panel5) getComponent()).jCheckBoxInnerLinks.setText("create links between " + firstAgent + " agents and links between " + secondAgent + " agents.");
+        MyFileImporter.firstConnectorDelimiter = Panel3.firstConnectorDelimiter;
+        MyFileImporter.secondConnectorDelimiter = Panel3.secondConnectorDelimiter;
 
     }
 

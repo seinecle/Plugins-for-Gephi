@@ -12,13 +12,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -26,11 +32,19 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
+import org.gephi.dynamic.DynamicUtilities;
+import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
+import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
+import org.gephi.io.processor.plugin.DynamicProcessor;
+import org.gephi.project.api.ProjectController;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.openide.util.Lookup;
 
 /*
  Copyright 2008-2013 Clement Levallois
@@ -84,6 +98,9 @@ public class ExcelParser {
     ContainerLoader container;
     public static int nbColumnFirstAgent;
     public static int nbColumnSecondAgent;
+    Map<String, Set<String>> nodeAndIntervals = new HashMap();
+    Map<String, Set<String>> edgeAndIntervals = new HashMap();
+    Set<String> nodesCurrentLine;
 
     public ExcelParser(String fileName, String sheetName) {
         this.fileName = fileName;
@@ -92,6 +109,9 @@ public class ExcelParser {
 
     public ExcelParser(String fileName) {
         this.fileName = fileName;
+    }
+
+    public ExcelParser() {
     }
 
     public void parse() throws FileNotFoundException, IOException, InvalidFormatException {
@@ -130,6 +150,22 @@ public class ExcelParser {
         container = MyFileImporter.container;
         container.setEdgeDefault(EdgeDefault.UNDIRECTED);
 
+        //dealing with the case of dynamic networks!!
+        if (MyFileImporter.timeField != null) {
+            container.setTimeFormat(TimeFormat.DATETIME);
+
+        }
+
+        AttributeTable atNodes = container.getAttributeModel().getNodeTable();
+//        AttributeColumn acTest = atNodes.addColumn("type", AttributeType.DYNAMIC_BOOLEAN);
+//        NodeDraft nodeDraft = container.factory().newNodeDraft();
+//        nodeDraft.addTimeInterval("2009-03-01", "2009-03-010");
+//        nodeDraft.setId("0");
+//        nodeDraft.setLabel("test");
+//        nodeDraft.addAttributeValue(acTest, true, "2009-03-02", "2009-03-03", true, true);
+//        nodeDraft.addAttributeValue(acTest, true, "2009-03-04", "2009-03-06", true, true);
+//        container.addNode(nodeDraft);
+
         String firstDelimiter;
         String secondDelimiter;
         firstDelimiter = Utils.getCharacter(MyFileImporter.firstConnectorDelimiter);
@@ -155,8 +191,12 @@ public class ExcelParser {
         }
         Set<String> linesFirstAgent = new HashSet();
         Set<String> linesSecondAgent = new HashSet();
-        for (int i = startingRow; i <= sheet.getLastRowNum(); i++) {
 
+//        Double earliestTime = 1000000000000d;
+//        Double latestTime = 0d;
+        String interval;
+        for (int i = startingRow; i <= sheet.getLastRowNum(); i++) {
+            interval = null;
             row = sheet.getRow(i);
             if (row == null) {
                 break;
@@ -169,7 +209,7 @@ public class ExcelParser {
                 continue;
             }
 
-            String firstAgent = row.getCell(nbColumnFirstAgent).getStringCellValue();
+            String firstAgent = cell.getStringCellValue();
 
             if (firstAgent == null || firstAgent.isEmpty()) {
                 Issue issue = new Issue("problem with line " + lineCounter + " (empty column " + MyFileImporter.getFirstConnectedAgent() + "). It was skipped in the conversion", Issue.Level.WARNING);
@@ -200,7 +240,7 @@ public class ExcelParser {
                     continue;
                 }
                 if (MyFileImporter.removeDuplicates) {
-                    boolean newLine = linesFirstAgent.add(firstAgent);
+                    boolean newLine = linesSecondAgent.add(secondAgent);
                     if (!newLine) {
                         continue;
                     }
@@ -211,6 +251,7 @@ public class ExcelParser {
 
             String[] firstAgentSplit;
             String[] secondAgentSplit;
+            nodesCurrentLine = new HashSet();
 
             if (firstDelimiter != null) {
                 firstAgentSplit = firstAgent.trim().split(firstDelimiter);
@@ -222,6 +263,7 @@ public class ExcelParser {
                 node = node.trim();
                 nodesFirst.add(node);
                 nodes.add(node);
+                nodesCurrentLine.add(node);
             }
 
             if (!oneTypeOfAgent) {
@@ -236,19 +278,140 @@ public class ExcelParser {
                     node = node.trim();
                     nodesSecond.add(node);
                     nodes.add(node);
+                    nodesCurrentLine.add(node);
                 }
             } else {
                 secondAgentSplit = null;
             }
 
+            //detecting the value of the time field
+            if (MyFileImporter.timeField != null) {
+                cell = row.getCell(MyFileImporter.timeFieldIndex);
+                if (cell == null) {
+                    Issue issue = new Issue("problem with line " + lineCounter + " (empty column " + MyFileImporter.timeField + "). It was skipped in the conversion", Issue.Level.WARNING);
+                    MyFileImporter.getStaticReport().logIssue(issue);
+                    continue;
+                }
+                String timeField = null;
+
+                if (cell != null) {
+                    switch (cell.getCellType()) {
+                        case Cell.CELL_TYPE_BOOLEAN:
+                            break;
+                        case Cell.CELL_TYPE_NUMERIC:
+                            timeField = String.valueOf(cell.getNumericCellValue()).split("[.,]")[0];
+                            break;
+                        case Cell.CELL_TYPE_STRING:
+                            timeField = cell.getStringCellValue();
+                            break;
+                        case Cell.CELL_TYPE_BLANK:
+                            break;
+                        case Cell.CELL_TYPE_ERROR:
+                            break;
+                        // CELL_TYPE_FORMULA will never occur
+                        case Cell.CELL_TYPE_FORMULA:
+                            break;
+                    }
+                }
+
+                if (timeField == null || timeField.isEmpty()) {
+                    Issue issue = new Issue("problem with line " + lineCounter + " (empty column " + MyFileImporter.timeField + "). It was skipped in the conversion", Issue.Level.WARNING);
+                    MyFileImporter.getStaticReport().logIssue(issue);
+                    continue;
+                }
+
+                //dealing with the case there is a duration in the time field. Duration: two time stamps separated by a comma
+                //getting min and max times
+                timeField = timeField.trim();
+                timeField.replaceAll(" ", "");
+                Long start = null;
+                Long end = null;
+                Long time = null;
+                LocalDate date;
+                try {
+                    if (timeField.contains(",")) {
+                        if (MyFileImporter.timeField.toLowerCase().equals("year") || MyFileImporter.timeField.toLowerCase().equals("years")) {
+//                            start = DynamicUtilities.getDoubleFromXMLDateString(timeField.split(",")[0] + "-01-01");
+                            date = new LocalDate(Integer.valueOf(timeField.split(",")[0]), 01, 01);
+                            start = date.toDateTimeAtStartOfDay().getMillis();
+
+                        } else {
+                            date = new LocalDate(Integer.valueOf(timeField.split(",")[0].split("-")[0]), Integer.valueOf(timeField.split(",")[0].split("-")[1]), Integer.valueOf(timeField.split(",")[0].split("-")[2]));
+                            start = date.toDateTimeAtStartOfDay().getMillis();
+
+                        }
+//                        if (start < earliestTime) {
+//                            earliestTime = start;
+//                        }
+                        if (MyFileImporter.timeField.toLowerCase().equals("year") || MyFileImporter.timeField.toLowerCase().equals("years")) {
+//                            end = DynamicUtilities.getDoubleFromXMLDateString(timeField.split(",")[1] + "-01-01");
+                            date = new LocalDate(Integer.valueOf(timeField.split(",")[1]), 01, 01);
+                            end = date.toDateTimeAtStartOfDay().getMillis();
+                        } else {
+                            date = new LocalDate(Integer.valueOf(timeField.split(",")[1].split("-")[0]), Integer.valueOf(timeField.split(",")[1].split("-")[1]), Integer.valueOf(timeField.split(",")[1].split("-")[2]));
+                            end = date.toDateTimeAtStartOfDay().getMillis();
+                        }
+//                        if (end > latestTime) {
+//                            latestTime = end;
+//                        }
+                    } else {
+                        if (MyFileImporter.timeField.toLowerCase().equals("year") || MyFileImporter.timeField.toLowerCase().equals("years")) {
+//                            time = DynamicUtilities.getDoubleFromXMLDateString(timeField + "-01-01");
+                            date = new LocalDate(Integer.valueOf(timeField), 01, 01);
+                            time = date.toDateTimeAtStartOfDay().getMillis();
+                        } else {
+                            date = new LocalDate(Integer.valueOf(timeField.split("-")[0]), Integer.valueOf(timeField.split("-")[1]), Integer.valueOf(timeField.split("-")[2]));
+                            time = date.toDateTimeAtStartOfDay().getMillis();
+                        }
+//                        if (time < earliestTime) {
+//                            earliestTime = time;
+//                        }
+//                        if (time > latestTime) {
+//                            latestTime = time;
+//                        }
+
+                    }
+                } catch (Exception e) {
+                    Issue issue = new Issue("problem with line " + lineCounter + ": time not formatted correctly. It was skipped in the conversion", Issue.Level.WARNING);
+                    MyFileImporter.getStaticReport().logIssue(issue);
+                    continue;
+                }
+
+                if (time == null) {
+                    interval = BigDecimal.valueOf(start).toPlainString() + "," + BigDecimal.valueOf(end).toPlainString();
+                } else {
+                    interval = BigDecimal.valueOf(time).toPlainString() + "," + BigDecimal.valueOf(time).toPlainString();
+                }
+
+                for (String n : nodesCurrentLine) {
+
+                    Set<String> intervals = nodeAndIntervals.get(n);
+                    if (intervals == null) {
+                        intervals = new TreeSet();
+                    }
+                    intervals.add(interval);
+                    nodeAndIntervals.put(n, intervals);
+                }
+            }
+
             //let's find all connections between all the agents in this row
             Utils usefulTools = new Utils();
+            String edge;
 
             if (!MyFileImporter.innerLinksIncluded) {
                 for (String x : firstAgentSplit) {
                     for (String xx : secondAgentSplit) {
                         if (!(MyFileImporter.removeSelfLoops & x.equals(xx))) {
-                            edges.add(x.trim() + "|" + xx.trim());
+                            edge = x.trim() + "|" + xx.trim();
+                            edges.add(edge);
+                            if (interval != null) {
+                                Set<String> intervals = edgeAndIntervals.get(edge);
+                                if (intervals == null) {
+                                    intervals = new TreeSet();
+                                }
+                                intervals.add(interval);
+                                edgeAndIntervals.put(edge, intervals);
+                            }
                         }
                     }
                 }
@@ -256,12 +419,22 @@ public class ExcelParser {
                 List<String> connections;
                 String[] both = ArrayUtils.addAll(firstAgentSplit, secondAgentSplit);
                 connections = usefulTools.getListOfLinks(both, MyFileImporter.removeSelfLoops);
-                edges.addAll(connections);
+                for (String e : connections) {
+                    edges.add(e);
+                    if (interval != null) {
+                        Set<String> intervals = edgeAndIntervals.get(e);
+                        if (intervals == null) {
+                            intervals = new TreeSet();
+                        }
+                        intervals.add(interval);
+                        edgeAndIntervals.put(e, intervals);
+                    }
+
+                }
+
             }
         }
-
         NodeDraft node;
-        AttributeTable atNodes = container.getAttributeModel().getNodeTable();
         AttributeColumn acFrequency = atNodes.addColumn("frequency", AttributeType.INT);
         AttributeColumn acType = atNodes.addColumn("type", AttributeType.STRING);
         StringBuilder type;
@@ -284,8 +457,18 @@ public class ExcelParser {
                 type.append(MyFileImporter.getSecondConnectedAgent());
             }
             node.addAttributeValue(acType, type);
+
+            if (MyFileImporter.timeField != null) {
+                if (nodeAndIntervals.get(n) != null) {
+                    for (String inter : nodeAndIntervals.get(n)) {
+                        LocalDate start = new LocalDate(Long.parseLong(inter.split(",")[0]));
+                        LocalDate end = new LocalDate(Long.parseLong(inter.split(",")[1]));
+                        node.addTimeInterval(start.toString("yyyy-MM-dd"), end.toString("yyyy-MM-dd"));
+                    }
+                }
+            }
             container.addNode(node);
-       }
+        }
 
         //loop for edges
         Integer idEdge = 0;
@@ -302,6 +485,16 @@ public class ExcelParser {
             edge.setWeight((float) edges.count(e));
             edge.setId(String.valueOf(idEdge));
             edge.setType(EdgeDraft.EdgeType.UNDIRECTED);
+            if (MyFileImporter.timeField != null) {
+                if (edgeAndIntervals.get(e) != null) {
+                    for (String inter : edgeAndIntervals.get(e)) {
+                        LocalDate start = new LocalDate(Long.parseLong(inter.split(",")[0]));
+                        LocalDate end = new LocalDate(Long.parseLong(inter.split(",")[1]));
+                        edge.addTimeInterval(start.toString("yyyy-MM-dd"), end.toString("yyyy-MM-dd"));
+                    }
+                }
+            }
+
             container.addEdge(edge);
         }
     }
@@ -347,5 +540,9 @@ public class ExcelParser {
         int numColumns = row.getLastCellNum();
         inp.close();
         return numColumns;
+    }
+
+    public void testDynamics() {
+
     }
 }

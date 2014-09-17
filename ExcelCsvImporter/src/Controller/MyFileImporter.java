@@ -47,6 +47,7 @@ import Parsers.CsvParser;
 import Parsers.ExcelParser;
 import Wizard.Panel1;
 import Wizard.Panel2;
+import Wizard.Panel4;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,7 +101,9 @@ public class MyFileImporter implements SpigotImporter, LongTask {
     public static String firstConnectorDelimiter;
     public static String secondConnectorDelimiter;
     public static Boolean headersPresent;
-    private static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+    public static String timeField;
+    public static int timeFieldIndex;
+    private static final String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
     @Override
     public boolean execute(ContainerLoader loader) {
@@ -258,6 +261,13 @@ public class MyFileImporter implements SpigotImporter, LongTask {
         headersList.addAll(Arrays.asList(headers));
         firstConnectedAgentIndex = headersList.indexOf(firstConnectedAgent);
         secondConnectedAgentIndex = headersList.indexOf(secondConnectedAgent);
+    }
+
+    public static void getTimeField() {
+        timeField = Panel4.fieldTime;
+        List<String> headersList = new ArrayList();
+        headersList.addAll(Arrays.asList(headers));
+        timeFieldIndex = headersList.indexOf(timeField);
     }
 
     @Override

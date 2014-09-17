@@ -26,29 +26,15 @@ public class Panel5 extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
+        jCheckBoxInnerLinks = new javax.swing.JCheckBox();
+        jCheckBoxRemoveDuplicates = new javax.swing.JCheckBox();
+        jCheckBoxSelfLoops = new javax.swing.JCheckBox();
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBoxInnerLinks, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jCheckBoxInnerLinks.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel2.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBoxRemoveDuplicates, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jCheckBoxRemoveDuplicates.text")); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel3.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel4.text")); // NOI18N
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel5, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel5.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel6, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel6.text")); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel7, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jLabel7.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBoxSelfLoops, org.openide.util.NbBundle.getMessage(Panel5.class, "Panel5.jCheckBoxSelfLoops.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -57,57 +43,33 @@ public class Panel5 extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(198, 198, 198))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jCheckBoxSelfLoops)
+                    .addComponent(jCheckBoxRemoveDuplicates)
+                    .addComponent(jCheckBoxInnerLinks))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(57, 57, 57)
-                .addComponent(jLabel1)
-                .addGap(27, 27, 27)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
-                .addComponent(jLabel6)
+                .addGap(44, 44, 44)
+                .addComponent(jCheckBoxInnerLinks)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35))
+                .addComponent(jCheckBoxRemoveDuplicates)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBoxSelfLoops)
+                .addContainerGap(184, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    public static javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    public static javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
+    public static javax.swing.JCheckBox jCheckBoxInnerLinks;
+    public static javax.swing.JCheckBox jCheckBoxRemoveDuplicates;
+    public static javax.swing.JCheckBox jCheckBoxSelfLoops;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public String getName() {
-        return "Ready to import";   //this will be the title of the panel in the wizard
+        return "Options";   //this will be the title of the panel in the wizard
     }
 
-}
 
+}

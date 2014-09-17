@@ -73,12 +73,13 @@ public class MySpigotWizardUI implements ImporterWizardUI {
     @Override
     public Panel[] getPanels() {
         if (panels == null) {
-            panels = new Panel[5];
+            panels = new Panel[6];
             panels[0] = new Panel1Wizard();
             panels[1] = new Panel2Wizard();
             panels[2] = new Panel3Wizard();
             panels[3] = new Panel4Wizard();
             panels[4] = new Panel5Wizard();
+            panels[5] = new Panel6Wizard();
         }
         return panels;
     }
@@ -92,9 +93,9 @@ public class MySpigotWizardUI implements ImporterWizardUI {
     public void unsetup(SpigotImporter importer, Panel panel) {
         //When the wizard has been closed
 //        ((Panel1) ((Panel) panels[0]).getComponent()).unsetup((MyFileImporter)importer);
-        MyFileImporter.innerLinksIncluded = Panel4.jCheckBoxInnerLinks.isSelected();
-        MyFileImporter.removeDuplicates = Panel4.jCheckBoxRemoveDuplicates.isSelected();
-        MyFileImporter.removeSelfLoops = Panel4.jCheckBoxSelfLoops.isSelected();
+        MyFileImporter.innerLinksIncluded = Panel5.jCheckBoxInnerLinks.isSelected();
+        MyFileImporter.removeDuplicates = Panel5.jCheckBoxRemoveDuplicates.isSelected();
+        MyFileImporter.removeSelfLoops = Panel5.jCheckBoxSelfLoops.isSelected();
 
         panels = null;
     }

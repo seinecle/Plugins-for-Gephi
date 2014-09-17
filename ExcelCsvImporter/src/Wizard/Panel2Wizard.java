@@ -5,13 +5,7 @@
 package Wizard;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
 import javax.swing.event.ChangeListener;
 import Controller.MyFileImporter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -19,7 +13,6 @@ import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
-import org.openide.util.NbPreferences;
 
 /*
  Copyright 2008-2013 Clement Levallois
