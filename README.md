@@ -1,6 +1,6 @@
 #Plugins for Gephi  
 
-License for all plugins: (GPL v3)[https://github.com/seinecle/My-Plugins-for-Gephi/blob/master/gpl-3.0.txt]
+License for all plugins: [GPL v3](https://github.com/seinecle/My-Plugins-for-Gephi/blob/master/gpl-3.0.txt)
 
 In this repository I list the plugins I created for Gephi. See the [Gephi Marketplace](https://marketplace.gephi.org/) for the ready-to-use versions of these plugins.
 
