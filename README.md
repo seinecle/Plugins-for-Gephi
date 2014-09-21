@@ -30,7 +30,9 @@ See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/excel-csv-conve
 Reads a node attribute that contains RGB or #hex values, and colors nodes accordingly.
 See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/give-color-to-nodes/) for details.
 
-
+###Citing any of these plugins in a publication
+I would really appreciate if you would reference these plugins in your publications if making use of them. Citation format is:  
+Levallois, Clement 2014. [Plugin name and version if any], GitHub repository, DOI: http://dx.doi.org/10.5281/zenodo.11812  
 
 
 Any feedback, feature requests and bug reports are welcome!  

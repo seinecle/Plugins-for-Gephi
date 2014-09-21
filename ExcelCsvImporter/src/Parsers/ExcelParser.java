@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,19 +30,13 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeTable;
 import org.gephi.data.attributes.api.AttributeType;
-import org.gephi.dynamic.DynamicUtilities;
 import org.gephi.dynamic.api.DynamicModel.TimeFormat;
 import org.gephi.io.importer.api.ContainerLoader;
 import org.gephi.io.importer.api.EdgeDefault;
 import org.gephi.io.importer.api.EdgeDraft;
-import org.gephi.io.importer.api.ImportController;
 import org.gephi.io.importer.api.Issue;
 import org.gephi.io.importer.api.NodeDraft;
-import org.gephi.io.processor.plugin.DynamicProcessor;
-import org.gephi.project.api.ProjectController;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.openide.util.Lookup;
 
 /*
  Copyright 2008-2013 Clement Levallois
@@ -294,24 +286,22 @@ public class ExcelParser {
                 }
                 String timeField = null;
 
-                if (cell != null) {
-                    switch (cell.getCellType()) {
-                        case Cell.CELL_TYPE_BOOLEAN:
-                            break;
-                        case Cell.CELL_TYPE_NUMERIC:
-                            timeField = String.valueOf(cell.getNumericCellValue()).split("[.,]")[0];
-                            break;
-                        case Cell.CELL_TYPE_STRING:
-                            timeField = cell.getStringCellValue();
-                            break;
-                        case Cell.CELL_TYPE_BLANK:
-                            break;
-                        case Cell.CELL_TYPE_ERROR:
-                            break;
-                        // CELL_TYPE_FORMULA will never occur
-                        case Cell.CELL_TYPE_FORMULA:
-                            break;
-                    }
+                switch (cell.getCellType()) {
+                    case Cell.CELL_TYPE_BOOLEAN:
+                        break;
+                    case Cell.CELL_TYPE_NUMERIC:
+                        timeField = String.valueOf(cell.getNumericCellValue()).split("[.,]")[0];
+                        break;
+                    case Cell.CELL_TYPE_STRING:
+                        timeField = cell.getStringCellValue();
+                        break;
+                    case Cell.CELL_TYPE_BLANK:
+                        break;
+                    case Cell.CELL_TYPE_ERROR:
+                        break;
+                    // CELL_TYPE_FORMULA will never occur
+                    case Cell.CELL_TYPE_FORMULA:
+                        break;
                 }
 
                 if (timeField == null || timeField.isEmpty()) {
@@ -323,7 +313,7 @@ public class ExcelParser {
                 //dealing with the case there is a duration in the time field. Duration: two time stamps separated by a comma
                 //getting min and max times
                 timeField = timeField.trim();
-                timeField.replaceAll(" ", "");
+                timeField = timeField.replaceAll(" ", "");
                 Long start = null;
                 Long end = null;
                 Long time = null;
@@ -369,6 +359,13 @@ public class ExcelParser {
 //                        if (time > latestTime) {
 //                            latestTime = time;
 //                        }
+
+                        if (start != null && end != null && end < start) {
+                            Issue issue = new Issue("problem with line " + lineCounter + ": end time can not be earlier than start time. Line was skipped in the conversion.", Issue.Level.WARNING);
+                            MyFileImporter.getStaticReport().logIssue(issue);
+                            continue;
+
+                        }
 
                     }
                 } catch (Exception e) {

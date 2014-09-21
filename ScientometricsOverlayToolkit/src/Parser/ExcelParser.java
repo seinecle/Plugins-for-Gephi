@@ -6,6 +6,7 @@ package Parser;
 
 import ResourceLoaders.JournalAbbreviationsMapping;
 import ResourceLoaders.JournalToISICategoriesMapping;
+import Utils.LogUpdate;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import java.io.FileInputStream;
@@ -16,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.swing.DefaultListModel;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -39,6 +42,7 @@ import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.project.api.ProjectController;
 import org.openide.util.Lookup;
 
 /*
@@ -94,6 +98,7 @@ public class ExcelParser {
     int entitiesColumnIndex;
     String selectedSheet;
     static public Multiset<String> ISICategories;
+    static public Map<String, Set<String>> ISICategoriesAndTheirYears;
     static public Multiset<String> ISICategoriesPerYear;
     public DefaultListModel listModel;
     JournalAbbreviationsMapping journalAbbreviationMapping;
@@ -103,11 +108,9 @@ public class ExcelParser {
     Workbook wb;
     private boolean mapsLoaded = false;
     static public Multiset<String> allISICategories;
-    
     public static float minDiff;
     public static float maxDiff;
     public static float averageDiff;
-
 
     public ExcelParser(String fileName) throws FileNotFoundException, IOException, InvalidFormatException {
         this.fileName = fileName;
@@ -265,6 +268,7 @@ public class ExcelParser {
             if (header.equals(ISIColumnArg)) {
                 ISIColumn = header;
                 ISIColumnIndex = index;
+                break;
             }
             index++;
         }
@@ -329,6 +333,7 @@ public class ExcelParser {
         String[] headers = getHeaders(selectedSheet);
         ISICategories = HashMultiset.create();
         ISICategoriesPerYear = HashMultiset.create();
+        ISICategoriesAndTheirYears = new HashMap();
 
 
         if (journalTitles & !mapsLoaded) {
@@ -349,6 +354,7 @@ public class ExcelParser {
             if (header.equals(ISIColumnArg)) {
                 ISIColumn = header;
                 ISIColumnIndex = index;
+                break;
             }
             index++;
         }
@@ -359,6 +365,7 @@ public class ExcelParser {
                 if (header.equals(entitiesColumnArg)) {
                     entitiesColumn = header;
                     entitiesColumnIndex = index;
+                    break;
                 }
                 index++;
             }
@@ -369,6 +376,7 @@ public class ExcelParser {
             if (header.equals(yearColumnArg)) {
                 yearColumn = header;
                 yearColumnIndex = index;
+                break;
             }
             index++;
         }
@@ -410,8 +418,8 @@ public class ExcelParser {
                     if (jTextFieldFieldSeparator != null & !jTextFieldFieldSeparator.trim().isEmpty()) {
                         boolean found = false;
                         String[] entitySplitted = entity.split(jTextFieldFieldSeparator);
-                        for (int j = 0; i < entitySplitted.length; j++) {
-                            if (entitiesToKeep.contains(entitySplitted[j])) {
+                        for (int j = 0; j < entitySplitted.length; j++) {
+                            if (entitiesToKeep.contains(entitySplitted[j].trim())) {
                                 found = true;
                             }
                         }
@@ -451,23 +459,47 @@ public class ExcelParser {
                 if (cellType == 0) {
                     year = String.valueOf(yearCell.getNumericCellValue());
                 }
+                if (ISICol.equals("plos pathogens")) {
+                    System.out.println("example plos pathogens found");
+                }
                 if (journalTitles) {
                     if (!journalAbbreviationMapping.getJournalsToAbbrev().containsKey(ISICol)) {
                         Collection<String> possibleJournalsForThisAbbrev = journalAbbreviationMapping.getAbbrevToJournals().get(ISICol);
                         if (possibleJournalsForThisAbbrev.isEmpty()) {
+                            LogUpdate.update("this journal abbreviation / journal full title could not be recognized: " + ISICol);
                             continue;
                         } else {
-                            ISICol = possibleJournalsForThisAbbrev.iterator().next();
+                            ISICol = possibleJournalsForThisAbbrev.iterator().next().trim();
                         }
                     }
                     Collection<String> ISICatsFotThisJournal = journalToISICategoriesMapping.getJournalsToISI().get(ISICol);
+                    if (ISICatsFotThisJournal.isEmpty()) {
+                        LogUpdate.update("no ISI category could be found for this journal: " + ISICol);
+
+                    }
                     for (String ISICat : ISICatsFotThisJournal) {
-                        ISICategoriesPerYear.add((ISICat + "|" + year.trim()));
-                        ISICategories.add((ISICat));
+                        ISICategoriesPerYear.add((ISICat.trim() + "|" + year.trim()));
+                        ISICategories.add((ISICat.trim()));
+                        if (ISICategoriesAndTheirYears.containsKey(ISICat.trim())) {
+                            ISICategoriesAndTheirYears.get(ISICat.trim()).add(year);
+                        } else {
+                            Set<String> years = new HashSet();
+                            years.add(year);
+                            ISICategoriesAndTheirYears.put(ISICat.trim(), years);
+                        }
                     }
                 } else {
-                    ISICategoriesPerYear.add((ISICol + "|" + year.trim()));
-                    ISICategories.add((ISICol));
+                    ISICategoriesPerYear.add((ISICol.trim() + "|" + year.trim()));
+                    ISICategories.add((ISICol.trim()));
+                    ISICategories.add((ISICol.trim()));
+                    if (ISICategoriesAndTheirYears.containsKey(ISICol.trim())) {
+                        ISICategoriesAndTheirYears.get(ISICol.trim()).add(year);
+                    } else {
+                        Set<String> years = new HashSet();
+                        years.add(year);
+                        ISICategoriesAndTheirYears.put(ISICol.trim(), years);
+                    }
+
                 }
             }
         }
@@ -475,11 +507,18 @@ public class ExcelParser {
 
     public void overlay() throws IOException, InvalidFormatException {
 
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentProject() == null) {
+            pc.newProject();
+        }
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = gc.getModel();
         Graph graph = graphModel.getGraph();
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         AttributeColumnsController acc = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        if (attributeModel.getNodeTable().getColumn("freq") != null) {
+            attributeModel.getNodeTable().removeColumn(attributeModel.getNodeTable().getColumn("freq"));
+        }
         AttributeColumn freqCol = acc.addAttributeColumn(attributeModel.getNodeTable(), "freq", AttributeType.FLOAT);//Existence intervals column for nodes
 
 
@@ -496,45 +535,58 @@ public class ExcelParser {
 
     public void overlayRelativeToAverage() throws IOException, InvalidFormatException {
 
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentProject() == null) {
+            pc.newProject();
+        }
+
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = gc.getModel();
         Graph graph = graphModel.getGraph();
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         AttributeColumnsController acc = Lookup.getDefault().lookup(AttributeColumnsController.class);
+        if (attributeModel.getNodeTable().getColumn("freq") != null) {
+            attributeModel.getNodeTable().removeColumn(attributeModel.getNodeTable().getColumn("freq"));
+        }
         AttributeColumn freqCol = acc.addAttributeColumn(attributeModel.getNodeTable(), "freq", AttributeType.FLOAT);//Existence intervals column for nodes
 
 
         minDiff = 1000f;
         maxDiff = -1000f;
-        
+
         for (Node node : graph.getNodes().toArray()) {
             String nodeLabel = node.getNodeData().getLabel();
             if (ISICategories.contains(nodeLabel.toLowerCase())) {
-                float relativeFreqInTotal = (float)allISICategories.count(nodeLabel)/allISICategories.size();
-                float relativeFreqInSelection = (float)ISICategories.count(nodeLabel)/ISICategories.size();
-                float diff = relativeFreqInTotal-relativeFreqInSelection;
-                if (diff<minDiff){
+                float relativeFreqInTotal = (float) allISICategories.count(nodeLabel) / allISICategories.size();
+                float relativeFreqInSelection = (float) ISICategories.count(nodeLabel) / ISICategories.size();
+                float diff = relativeFreqInTotal - relativeFreqInSelection;
+                if (diff < minDiff) {
                     minDiff = diff;
                 }
-                if (diff>maxDiff){
+                if (diff > maxDiff) {
                     maxDiff = diff;
                 }
                 node.getNodeData().getAttributes().setValue("freq", diff);
             }
         }
+        //Revoir le code: est ce que la logique peut etre mieux expliquee?
 
-        averageDiff = (maxDiff+minDiff)/2;
+        averageDiff = (maxDiff + minDiff) / 2;
         for (Node node : graph.getNodes().toArray()) {
             String nodeLabel = node.getNodeData().getLabel();
             if (!ISICategories.contains(nodeLabel.toLowerCase())) {
                 node.getNodeData().getAttributes().setValue("freq", averageDiff);
             }
         }
-        
+
     }
 
     public void overlayDynamic() throws IOException, InvalidFormatException {
 
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc.getCurrentProject() == null) {
+            pc.newProject();
+        }
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         GraphModel graphModel = gc.getModel();
         Graph graph = graphModel.getGraph();
@@ -542,6 +594,10 @@ public class ExcelParser {
 
         AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
         AttributeColumnsController acc = Lookup.getDefault().lookup(AttributeColumnsController.class);
+
+        if (attributeModel.getNodeTable().getColumn("freq") != null) {
+            attributeModel.getNodeTable().removeColumn(attributeModel.getNodeTable().getColumn("freq"));
+        }
         AttributeColumn freqCol = acc.addAttributeColumn(attributeModel.getNodeTable(), "freq", AttributeType.DYNAMIC_FLOAT);//Existence intervals column for nodes
 
 //        AttributeColumn nodesTimeIntervalColumn = acc.addAttributeColumn(attributeModel.getNodeTable(), "Time Interval", AttributeType.TIME_INTERVAL);//Existence intervals column for nodes
@@ -569,7 +625,7 @@ public class ExcelParser {
             listDynFloats = new ArrayList();
             if (ISICategories.contains(nodeLabel)) {
                 for (String catYear : ISICategoriesPerYear.elementSet()) {
-                    if (catYear.contains(nodeLabel)) {
+                    if (catYear.split("\\|")[0].equals(nodeLabel)) {
                         Double timeBoundary = Double.parseDouble(catYear.split("\\|")[1]);
                         if (timeBoundary > maxYear) {
                             maxYear = timeBoundary;
@@ -585,12 +641,26 @@ public class ExcelParser {
                 node.getNodeData().getAttributes().setValue("freq", dynFloat);
             }
         }
-        for (Node node : graph.getNodes().toArray()) {
-            String nodeLabel = node.getNodeData().getLabel().toLowerCase();
-            if (!ISICategories.contains(nodeLabel)) {
-                interval = new Interval(new Interval(minYear, maxYear), 0f);
-                dynFloat = new DynamicFloat(interval);
-                node.getNodeData().getAttributes().setValue("freq", dynFloat);
+        if (minYear < maxYear) {
+            for (Node node : graph.getNodes().toArray()) {
+                String nodeLabel = node.getNodeData().getLabel().toLowerCase();
+                if (!ISICategories.contains(nodeLabel)) {
+                    interval = new Interval(new Interval(minYear, maxYear), 0f);
+                    dynFloat = new DynamicFloat(interval);
+                    node.getNodeData().getAttributes().setValue("freq", dynFloat);
+                } else {
+                    for (Double i = minYear; i <= maxYear; i = i + 1) {
+                        String year = String.valueOf(i);
+                        if (!ISICategoriesAndTheirYears.get(nodeLabel).contains(year)) {
+                            interval = new Interval(new Interval(i, i), 0f);
+                            dynFloat = (DynamicFloat) node.getNodeData().getAttributes().getValue("freq");
+                            listDynFloats = dynFloat.getIntervals();
+                            listDynFloats.add(interval);
+                            dynFloat = new DynamicFloat(listDynFloats);
+                            node.getNodeData().getAttributes().setValue("freq", dynFloat);
+                        }
+                    }
+                }
             }
         }
     }

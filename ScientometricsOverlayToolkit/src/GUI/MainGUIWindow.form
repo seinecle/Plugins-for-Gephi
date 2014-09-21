@@ -319,6 +319,7 @@
                         <StringItem index="4" value="Item 5"/>
                       </StringArray>
                     </Property>
+                    <Property name="selectionMode" type="int" value="0"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -416,6 +417,7 @@
                         <StringItem index="4" value="Item 5"/>
                       </StringArray>
                     </Property>
+                    <Property name="selectionMode" type="int" value="0"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -594,32 +596,30 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jRadioButtonFilters" min="-2" max="-2" attributes="0"/>
+                          <Component id="jRadioButtonNoFilter" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
+                              <Component id="jLabelFieldSeparator" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jTextFieldFieldSeparator" min="-2" pref="21" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jLabelSelectEntityWhereFilter" max="32767" attributes="0"/>
+                          <Component id="jScrollPane5" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <Component id="jButtonBackToPanel4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButtonRun" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jRadioButtonFilters" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jRadioButtonNoFilter" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Component id="jLabelFieldSeparator" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jTextFieldFieldSeparator" min="-2" pref="21" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="jLabelSelectEntityWhereFilter" max="32767" attributes="0"/>
-                                  <Component id="jScrollPane5" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="jLabelChooseFieldsFilteredIn" max="32767" attributes="0"/>
-                                  <Component id="jScrollPane8" max="32767" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="jLabelChooseFieldsFilteredIn" min="-2" max="-2" attributes="0"/>
+                              <Component id="jScrollPane8" min="-2" pref="238" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace pref="27" max="32767" attributes="0"/>
@@ -649,12 +649,12 @@
                           <Component id="jLabelFieldSeparator" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jTextFieldFieldSeparator" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButtonRun" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButtonBackToPanel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButtonRun" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -678,6 +678,7 @@
                         <StringItem index="4" value="Item 5"/>
                       </StringArray>
                     </Property>
+                    <Property name="selectionMode" type="int" value="0"/>
                   </Properties>
                 </Component>
               </SubComponents>

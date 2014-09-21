@@ -222,14 +222,6 @@ public class UpdateFilterEntities implements Tool {
                                 MainGUIWindow.excelParser.countISICategories(MainGUIWindow.jRadioButtonJournals.isSelected(), MainGUIWindow.ISIcolumn, MainGUIWindow.selectedItemToFilterOn, elementsKept.toArray(new String[elementsKept.size()]), MainGUIWindow.jTextFieldFieldSeparator.getText());
                                 MainGUIWindow.excelParser.overlay();
 
-                                AttributeColumn freqColumn = attributeModel.getNodeTable().getColumn("freq");
-                                RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
-                                Ranking freqRanking = rankingController.getModel().getRanking(Ranking.NODE_ELEMENT, freqColumn.getId());
-
-                                AbstractSizeTransformer sizeTransformer = (AbstractSizeTransformer) rankingController.getModel().getTransformer(Ranking.NODE_ELEMENT, Transformer.RENDERABLE_SIZE);
-                                sizeTransformer.setMinSize(5);
-                                sizeTransformer.setMaxSize(50);
-                                rankingController.transform(freqRanking, sizeTransformer);
                             } catch (FileNotFoundException ex) {
                                 Exceptions.printStackTrace(ex);
                             } catch (IOException ex) {
@@ -240,7 +232,7 @@ public class UpdateFilterEntities implements Tool {
                         } else {
                             try {
                                 MainGUIWindow.excelParser.countISICategoriesAndYears(MainGUIWindow.jRadioButtonJournals.isSelected(), MainGUIWindow.ISIcolumn, MainGUIWindow.yearColumn, MainGUIWindow.selectedItemToFilterOn, elementsKept.toArray(new String[elementsKept.size()]), MainGUIWindow.jTextFieldFieldSeparator.getText());
-                                MainGUIWindow.excelParser.overlay();
+                                MainGUIWindow.excelParser.overlayDynamic();
                             } catch (FileNotFoundException ex) {
                                 Exceptions.printStackTrace(ex);
                             } catch (IOException ex) {
@@ -250,6 +242,15 @@ public class UpdateFilterEntities implements Tool {
                             }
 
                         }
+                        AttributeColumn freqColumn = attributeModel.getNodeTable().getColumn("freq");
+                        RankingController rankingController = Lookup.getDefault().lookup(RankingController.class);
+                        Ranking freqRanking = rankingController.getModel().getRanking(Ranking.NODE_ELEMENT, freqColumn.getId());
+
+                        AbstractSizeTransformer sizeTransformer = (AbstractSizeTransformer) rankingController.getModel().getTransformer(Ranking.NODE_ELEMENT, Transformer.RENDERABLE_SIZE);
+                        sizeTransformer.setMinSize(5);
+                        sizeTransformer.setMaxSize(50);
+                        rankingController.transform(freqRanking, sizeTransformer);
+
                         jLabel.setText(Arrays.toString(elementsKept.toArray(new String[elementsKept.size()])));
                     } else {
                         try {

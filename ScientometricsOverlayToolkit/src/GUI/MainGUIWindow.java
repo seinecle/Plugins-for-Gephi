@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -293,6 +294,7 @@ public final class MainGUIWindow extends TopComponent {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        jListSheetsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane7.setViewportView(jListSheetsList);
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabelSheets, org.openide.util.NbBundle.getMessage(MainGUIWindow.class, "MainGUIWindow.jLabelSheets.text")); // NOI18N
@@ -360,6 +362,7 @@ public final class MainGUIWindow extends TopComponent {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        jListFieldsInFile.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane4.setViewportView(jListFieldsInFile);
 
         org.openide.awt.Mnemonics.setLocalizedText(jButtonToPanel4, org.openide.util.NbBundle.getMessage(MainGUIWindow.class, "MainGUIWindow.jButtonToPanel4.text")); // NOI18N
@@ -489,6 +492,7 @@ public final class MainGUIWindow extends TopComponent {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        jListItemsToFilter.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane5.setViewportView(jListItemsToFilter);
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabelSelectEntityWhereFilter, org.openide.util.NbBundle.getMessage(MainGUIWindow.class, "MainGUIWindow.jLabelSelectEntityWhereFilter.text")); // NOI18N
@@ -544,27 +548,26 @@ public final class MainGUIWindow extends TopComponent {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jRadioButtonFilters)
+                    .addComponent(jRadioButtonNoFilter))
+                .addGap(60, 60, 60)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabelFieldSeparator)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTextFieldFieldSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabelSelectEntityWhereFilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5))
+                .addGap(72, 72, 72)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addComponent(jButtonBackToPanel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButtonRun))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButtonFilters)
-                            .addComponent(jRadioButtonNoFilter))
-                        .addGap(60, 60, 60)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabelFieldSeparator)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextFieldFieldSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabelSelectEntityWhereFilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane5))
-                        .addGap(72, 72, 72)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabelChooseFieldsFilteredIn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane8))))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabelChooseFieldsFilteredIn)
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -586,11 +589,11 @@ public final class MainGUIWindow extends TopComponent {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelFieldSeparator)
                     .addComponent(jTextFieldFieldSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonRun)
-                    .addComponent(jButtonBackToPanel4))
-                .addContainerGap())
+                    .addComponent(jButtonBackToPanel4)
+                    .addComponent(jButtonRun))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(org.openide.util.NbBundle.getMessage(MainGUIWindow.class, "MainGUIWindow.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
@@ -658,39 +661,47 @@ public final class MainGUIWindow extends TopComponent {
         //chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            try {
-                System.out.println("Current directory: " + chooser.getCurrentDirectory().getAbsolutePath());
+            System.out.println("Current directory: " + chooser.getCurrentDirectory().getAbsolutePath());
 
-                workingDirectory = chooser.getCurrentDirectory().getAbsolutePath().toString();
-                fileSelected = true;
-                fileSelectedPathANdName = chooser.getSelectedFile().toString();
-                if (fileSelectedPathANdName == null || !StringUtils.endsWithIgnoreCase(fileSelectedPathANdName, ".xlsx")) {
-                    LogUpdate.update("No file selected or wrong file format. It should be an Excel file in format .xlsx");
-                    return;
-                }
-                fileSelectedName = chooser.getSelectedFile().getName();
-                System.out.println("Selected File: " + fileSelectedPathANdName);
-                LogUpdate.update("Selected File: " + fileSelectedPathANdName);
-
-                excelParser = new ExcelParser(fileSelectedPathANdName);
-                String[] sheetsNames = excelParser.getSheetsNames();
-                DefaultListModel listModel = new DefaultListModel();
-                for (String string : sheetsNames) {
-                    listModel.addElement(string);
-                }
-                jListSheetsList.setModel(listModel);
-                jListSheetsList.setSelectedIndex(0);
-                jListSheetsList.setVisible(true);
-                jScrollPane7.setVisible(true);
-                jLabelSheets.setVisible(true);
-
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (InvalidFormatException ex) {
-                Exceptions.printStackTrace(ex);
+            workingDirectory = chooser.getCurrentDirectory().getAbsolutePath().toString();
+            fileSelected = true;
+            fileSelectedPathANdName = chooser.getSelectedFile().toString();
+            if (fileSelectedPathANdName == null || !StringUtils.endsWithIgnoreCase(fileSelectedPathANdName, ".xlsx")) {
+                LogUpdate.update("No file selected or wrong file format. It should be an Excel file in format .xlsx");
+                return;
             }
+            fileSelectedName = chooser.getSelectedFile().getName();
+            System.out.println("Selected File: " + fileSelectedPathANdName);
+            LogUpdate.update("Selected File: " + fileSelectedPathANdName);
+            LogUpdate.update("Reading the file. Please be patient while it loads...");
+            jButtonToPanel3.setEnabled(false);
+
+
+            SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+                @Override
+                public Void doInBackground() throws FileNotFoundException, IOException, InvalidFormatException {
+                    excelParser = new ExcelParser(fileSelectedPathANdName);
+                    String[] sheetsNames = excelParser.getSheetsNames();
+                    DefaultListModel listModel = new DefaultListModel();
+                    for (String string : sheetsNames) {
+                        listModel.addElement(string);
+                    }
+                    jListSheetsList.setModel(listModel);
+                    jListSheetsList.setSelectedIndex(0);
+                    jListSheetsList.setVisible(true);
+                    jScrollPane7.setVisible(true);
+                    jLabelSheets.setVisible(true);
+                    jButtonToPanel3.setEnabled(true);
+
+                    return null;
+                }
+            };
+            worker.execute();
+            LogUpdate.update("File is loaded.");
+
+
+
+
         } else {
             LogUpdate.update("No file selected.");
             System.out.println("No Selection");
@@ -751,7 +762,7 @@ public final class MainGUIWindow extends TopComponent {
                 excelParser.overlay();
 
             } else {
-                excelParser.countISICategoriesAndYears(jRadioButtonJournals.isSelected(), ISIcolumn, yearColumn, selectedItemToFilterOn, itemsFilteredInString, jTextFieldFieldSeparator.getText());
+                excelParser.countISICategoriesAndYears(jRadioButtonJournals.isSelected(), ISIcolumn, yearColumn, selectedItemToFilterOn, elementsKept.toArray(new String[elementsKept.size()]), jTextFieldFieldSeparator.getText());
                 excelParser.overlayDynamic();
             }
             LogUpdate.update("Done. You can now switch to the graph view.");
@@ -826,7 +837,6 @@ public final class MainGUIWindow extends TopComponent {
 
     private void jRadioButtonNoFilterPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jRadioButtonNoFilterPropertyChange
         if (jRadioButtonFilters.isSelected()) {
-            LogUpdate.update("Please be patient while it loads...");
             jListItemsToFilter.setVisible(true);
             jLabelSelectEntityWhereFilter.setVisible(true);
             jScrollPane5.setVisible(true);

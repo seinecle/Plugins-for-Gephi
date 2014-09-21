@@ -37,3 +37,17 @@ ScientometricsOverlayToolkit/private/
 /AndroidApplication1/gen/
 /AndroidApplication1/bin/
 /TestDynamicGephi/*
+/IRI/nbproject/private/
+/IRI/build/
+/IRI/dist/
+/Tiles/nbproject/private/
+/Tiles/Tiles-war/nbproject/private/
+/Tiles/Tiles-ejb/nbproject/private/
+/Tiles/Tiles-war/build/
+/Tiles/Tiles-ejb/build/
+/Tiles/Tiles-ejb/dist/
+/Tiles/build/
+/Tiles/Tiles-war/dist/
+/Tiles/Tweetiles/nbproject/private/
+/Tiles/Tweetiles/dist/
+/Tiles/Tweetiles/build/

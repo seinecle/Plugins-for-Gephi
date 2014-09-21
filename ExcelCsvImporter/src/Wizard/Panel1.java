@@ -197,7 +197,7 @@ public class Panel1 extends javax.swing.JPanel {
             if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 System.out.println("Current directory: " + chooser.getCurrentDirectory().getAbsolutePath());
 
-                workingDirectory = chooser.getCurrentDirectory().getAbsolutePath().toString();
+                workingDirectory = chooser.getCurrentDirectory().getAbsolutePath();
                 fileSelectedPathANdName = chooser.getSelectedFile().toString();
                 fileSelectedName = chooser.getSelectedFile().getName();
                 System.out.println("Selected File: " + fileSelectedPathANdName);
