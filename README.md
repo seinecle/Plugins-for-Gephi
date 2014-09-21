@@ -2,7 +2,7 @@
 
 License for all plugins: [GPL v3](https://github.com/seinecle/My-Plugins-for-Gephi/blob/master/gpl-3.0.txt)
 
-In this repository I list the plugins I created for Gephi. See the [Gephi Marketplace](https://marketplace.gephi.org/) for the ready-to-use versions of these plugins.
+In this repository are listed the plugins I created for Gephi. See the [Gephi Marketplace](https://marketplace.gephi.org/) for the ready-to-use versions of these plugins.
 
 ##1. Alphabetical Sorter
 This plugin is helpful to neatly sort and put apart isolated nodes floating around, before an export to SVG or PNG.  
@@ -30,6 +30,10 @@ See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/excel-csv-conve
 
 Reads a node attribute that contains RGB or #hex values, and colors nodes accordingly.
 See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/give-color-to-nodes/) for details.
+
+##6. Scientometrics Overlay Toolkot
+Overlays bibliographical references onto a map of science, a la [Loet Leydesdorf et al](http://www.leydesdorff.net/overlaytoolkit/).  
+This plugin works but is not finalized. Not available on the Gephi Marketplace, but please do contact me if you'd need to use it.
 
 ###Citing any of these plugins in a publication
 I would really appreciate if you would reference these plugins in your publications if making use of them. Citation format is:  
