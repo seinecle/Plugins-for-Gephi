@@ -1,0 +1,6 @@
+Manifest-Version: 1.3
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: GephiSimilarityComputer/1
+OpenIDE-Module-Localizing-Bundle: Controller/Bundle.properties
+OpenIDE-Module-Specification-Version: 0
+

@@ -106,7 +106,10 @@ public class Panel1Wizard implements WizardDescriptor.ValidatingPanel {
         if (Panel1.fileSelectedName == null) {
             throw new WizardValidationException(null, "Please select an Excel or csv  file", null);
         }
-        if (!Panel1.fileSelectedName.endsWith("xlsx") & Panel1.selectedFileDelimiter == null) {
+        else if (Panel1.fileSelectedName.endsWith("xls")) {
+            throw new WizardValidationException(null, "Please convert your excel file ending with .xls to the new format: ending in .xlsx", null);
+        }
+        else if (!Panel1.fileSelectedName.endsWith("xlsx") & Panel1.selectedFileDelimiter == null) {
             Font font = new Font("Tahoma", Font.BOLD, 11);
             Panel1.jLabelFieldDelimiter.setFont(font);
             throw new WizardValidationException(null, "Please select a field delimiter", null);

@@ -42,21 +42,18 @@ public class Panel1 extends javax.swing.JPanel {
         jTextFieldTextDelimiter.setVisible(false);
 
         jListExcelSheets.setVisible(false);
-        jScrollPane2.setVisible(false);
-        jLabel3.setVisible(false);
-
+        jScrollPaneExcelSheets.setVisible(false);
+        jLabelExcelSheets.setVisible(false);
 
         jListFieldDelimiter.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                    selectedFileDelimiter = (String) ((JList) e.getSource()).getSelectedValue();
-                    Font font = new Font("Tahoma", Font.PLAIN, 11);
-                    Panel1.jLabelFieldDelimiter.setFont(font);
-
+                selectedFileDelimiter = (String) ((JList) e.getSource()).getSelectedValue();
+                Font font = new Font("Tahoma", Font.PLAIN, 11);
+                Panel1.jLabelFieldDelimiter.setFont(font);
 
             }
         });
-
 
         jListExcelSheets.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -83,8 +80,8 @@ public class Panel1 extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jListFieldDelimiter = new javax.swing.JList();
         jCheckBoxHeadersIncluded = new javax.swing.JCheckBox();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        jLabelExcelSheets = new javax.swing.JLabel();
+        jScrollPaneExcelSheets = new javax.swing.JScrollPane();
         jListExcelSheets = new javax.swing.JList();
 
         org.openide.awt.Mnemonics.setLocalizedText(jButtonSelectFile, org.openide.util.NbBundle.getMessage(Panel1.class, "Panel1.jButtonSelectFile.text")); // NOI18N
@@ -116,7 +113,7 @@ public class Panel1 extends javax.swing.JPanel {
         jCheckBoxHeadersIncluded.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(jCheckBoxHeadersIncluded, org.openide.util.NbBundle.getMessage(Panel1.class, "Panel1.jCheckBoxHeadersIncluded.text")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(Panel1.class, "Panel1.jLabel3.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabelExcelSheets, org.openide.util.NbBundle.getMessage(Panel1.class, "Panel1.jLabelExcelSheets.text")); // NOI18N
 
         jListExcelSheets.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -124,7 +121,7 @@ public class Panel1 extends javax.swing.JPanel {
             public Object getElementAt(int i) { return strings[i]; }
         });
         jListExcelSheets.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane2.setViewportView(jListExcelSheets);
+        jScrollPaneExcelSheets.setViewportView(jListExcelSheets);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -139,12 +136,12 @@ public class Panel1 extends javax.swing.JPanel {
                             .addComponent(jButtonSelectFile)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
+                                    .addComponent(jLabelExcelSheets)
                                     .addComponent(jLabelFieldDelimiter))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jScrollPaneExcelSheets, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(18, 18, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -163,10 +160,10 @@ public class Panel1 extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPaneExcelSheets, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(47, 47, 47)
-                        .addComponent(jLabel3)))
+                        .addComponent(jLabelExcelSheets)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -205,6 +202,8 @@ public class Panel1 extends javax.swing.JPanel {
             }
             if (fileSelectedName == null) {
                 System.out.println("no file selected!");
+            } else if (fileSelectedName.endsWith("xls")) {
+                System.out.println("wrong Excel format selected");
             } else if (!fileSelectedName.endsWith("xlsx")) {
                 jLabelFieldDelimiter.setVisible(true);
                 jLabel2.setVisible(true);
@@ -212,9 +211,8 @@ public class Panel1 extends javax.swing.JPanel {
                 jScrollPane1.setVisible(true);
                 jTextFieldTextDelimiter.setVisible(true);
                 jListExcelSheets.setVisible(false);
-                jScrollPane2.setVisible(false);
-                jLabel3.setVisible(false);
-
+                jScrollPaneExcelSheets.setVisible(false);
+                jLabelExcelSheets.setVisible(false);
 
             } else {
                 ExcelParser excelParser = new ExcelParser(fileSelectedPathANdName);
@@ -227,8 +225,14 @@ public class Panel1 extends javax.swing.JPanel {
                 jListExcelSheets.setModel(listModel);
                 jListExcelSheets.setSelectedIndex(0);
                 jListExcelSheets.setVisible(true);
-                jScrollPane2.setVisible(true);
-                jLabel3.setVisible(true);
+                jScrollPaneExcelSheets.setVisible(true);
+                jLabelExcelSheets.setVisible(true);
+
+                jLabelFieldDelimiter.setVisible(false);
+                jLabel2.setVisible(false);
+                jListFieldDelimiter.setVisible(false);
+                jScrollPane1.setVisible(false);
+                jTextFieldTextDelimiter.setVisible(false);
 
             }
         } catch (IOException ex) {
@@ -247,12 +251,12 @@ public class Panel1 extends javax.swing.JPanel {
     private javax.swing.JButton jButtonSelectFile;
     public static javax.swing.JCheckBox jCheckBoxHeadersIncluded;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabelExcelSheets;
     public static javax.swing.JLabel jLabelFieldDelimiter;
     private javax.swing.JList jListExcelSheets;
     public static javax.swing.JList jListFieldDelimiter;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPaneExcelSheets;
     public static javax.swing.JTextField jTextFieldTextDelimiter;
     // End of variables declaration//GEN-END:variables
 

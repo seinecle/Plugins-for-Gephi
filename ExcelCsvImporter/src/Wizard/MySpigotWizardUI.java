@@ -62,12 +62,12 @@ public class MySpigotWizardUI implements ImporterWizardUI {
 
     @Override
     public String getCategory() {
-        return "Data importer";
+        return "Data importer (co-occurrences)";
     }
 
     @Override
     public String getDescription() {
-        return "This plugin helps you import Excel or csv files into Gephi: a network is created from your specifications.\n Feedback and feature requests are welcome!\n contact: @seinecle on Twitter.";
+        return "This plugin helps you import Excel or csv files into Gephi, based on entities which co-occur line by line.\n Feedback and feature requests are welcome!\n contact: @seinecle on Twitter.";
     }
 
     @Override
