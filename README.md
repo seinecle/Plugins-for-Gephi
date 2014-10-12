@@ -23,7 +23,7 @@ See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/maps-of-countri
 
 ##4. Excel / csv converter to network (2013)
 
-Import an Excel spreadsheet or csv file into Gephi, while providing methods to create networks from these types of files.
+Import an Excel spreadsheet or csv file into Gephi, and creates networks based on co-occurrences in each line of the file. Can also create dynamic networks since version 1.4.
 See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/excel-csv-converter-to-network/) for details.
 
 ##5. Give color to your nodes (2013)
@@ -38,7 +38,7 @@ This plugin works but is not finalized. Not available on the Gephi Marketplace, 
 
 ##7. Gephi Similarity Computer (2014)
 Creates a network based on the similarity between entities. Reads a csv file containing a list of entities with their features, and creates a network that is directly imported into Gephi.  
-
+[See the Gephi Marketplace for details](https://marketplace.gephi.org/plugin/similarity-computer/).  
 
 ###Citing any of these plugins in a publication
 Please reference these plugins in your publications when making use of them. Citation format is:  
