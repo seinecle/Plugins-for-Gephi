@@ -6,7 +6,6 @@ package Wizard;
 
 import java.io.File;
 import java.io.IOException;
-import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
@@ -14,7 +13,6 @@ import javax.swing.event.ListSelectionListener;
 import Parsers.ExcelParser;
 import Controller.MyFileImporter;
 import java.awt.Font;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.openide.util.Exceptions;
 
 /**

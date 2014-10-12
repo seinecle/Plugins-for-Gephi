@@ -18,8 +18,6 @@ import java.util.*;
 import levallois.clement.utils.Clock;
 import no.uib.cipr.matrix.sparse.SparseVector;
 import org.gephi.io.importer.api.Issue;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 /**
  *
@@ -337,27 +335,6 @@ public class ParserAndVectorsBuilder {
         //because it makes little sense to measure "how central" a node is in terms of similarity (I think)
         //whereas it is interesting to know where central nodes (in the original network) land in the similarity network.
         //in particular: do they end up being neighbors, or "chiefs" of separate regional kingdoms?
-        Clock computingbetweennessClock = new Clock("computing centrality scores in the initial network");
-        JgraphTBuilder graphBuilder;
-        if (Controller.directedNetwork) {
-            graphBuilder = new JgraphTBuilder(mapUndirected);
-        } else {
-            graphBuilder = new JgraphTBuilder(map);
-        }
-
-        DirectedGraph<Integer, DefaultEdge> g = graphBuilder.getGraph();
-        mapBetweenness = new HashMap();
-
-        for (int vertex = 0; vertex < mapNodes.size(); vertex++) {
-
-            if (Controller.directedNetwork) {
-//                System.out.println(mapNodes.inverse().get(vertex)+" "+g.inDegreeOf(vertex));    
-                mapBetweenness.put(vertex, g.inDegreeOf(vertex));
-            } else {
-                mapBetweenness.put(vertex, g.inDegreeOf(vertex) + g.outDegreeOf(vertex));
-            }
-        }
-        computingbetweennessClock.closeAndPrintClock();
 
         return listVectors;
 

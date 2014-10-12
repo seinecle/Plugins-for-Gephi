@@ -57,7 +57,7 @@ public class MySpigotWizardUI implements ImporterWizardUI {
 
     @Override
     public String getDisplayName() {
-        return "Excel to Gephi Similarity Computer";
+        return "Gephi Similarity Computer";
     }
 
     @Override

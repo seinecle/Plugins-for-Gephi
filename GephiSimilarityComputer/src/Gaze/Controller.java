@@ -1,6 +1,8 @@
 package Gaze;
 
 import Controller.MyFileImporter;
+import Utils.Utils;
+import Wizard.Panel1;
 import com.google.common.collect.BiMap;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -60,7 +62,8 @@ public class Controller{
                 minNbofCitationsASourceShouldMake = 1;
             }
 
-            ParserAndVectorsBuilder tr = new ParserAndVectorsBuilder(fieldSeparator);
+            String fieldDelimiter = Utils.getCharacter(Panel1.selectedFileDelimiter);
+            ParserAndVectorsBuilder tr = new ParserAndVectorsBuilder(fieldDelimiter);
             SparseVector[] listVectors = tr.EdgeListToMatrix();
 
             Thread t = new Thread(new CosineCalculation(listVectors));

@@ -352,7 +352,7 @@ public class ExcelParser {
                 LocalDate date;
                 try {
                     if (timeField.contains(",")) {
-                        if (timeField.split(",")[0].split("-").length<3) {
+                        if (timeField.split(",")[0].split("-").length < 3) {
 //                            start = DynamicUtilities.getDoubleFromXMLDateString(timeField.split(",")[0] + "-01-01");
                             date = new LocalDate(Integer.valueOf(timeField.split(",")[0]), 01, 01);
                             start = date.toDateTimeAtStartOfDay().getMillis();
@@ -364,7 +364,7 @@ public class ExcelParser {
 //                        if (start < earliestTime) {
 //                            earliestTime = start;
 //                        }
-                        if (timeField.split(",")[1].split("-").length<3) {
+                        if (timeField.split(",")[1].split("-").length < 3) {
 //                            end = DynamicUtilities.getDoubleFromXMLDateString(timeField.split(",")[1] + "-01-01");
                             date = new LocalDate(Integer.valueOf(timeField.split(",")[1]), 01, 01);
                             end = date.toDateTimeAtStartOfDay().getMillis();
@@ -376,7 +376,7 @@ public class ExcelParser {
 //                            latestTime = end;
 //                        }
                     } else {
-                        if (timeField.split("-").length<3) {
+                        if (timeField.split("-").length < 3) {
 //                            time = DynamicUtilities.getDoubleFromXMLDateString(timeField + "-01-01");
                             date = new LocalDate(Integer.valueOf(timeField), 01, 01);
                             time = date.toDateTimeAtStartOfDay().getMillis();
@@ -463,8 +463,20 @@ public class ExcelParser {
             }
         }
         NodeDraft node;
-        AttributeColumn acFrequency = atNodes.addColumn("frequency", AttributeType.INT);
-        AttributeColumn acType = atNodes.addColumn("type", AttributeType.STRING);
+        AttributeColumn acFrequency;
+        AttributeColumn acType;
+
+        if (atNodes.getColumn("frequency") == null) {
+            acFrequency = atNodes.addColumn("frequency", AttributeType.INT);
+        } else {
+            acFrequency = atNodes.getColumn("frequency");
+        }
+        if (atNodes.getColumn("type") == null) {
+            acType = atNodes.addColumn("type", AttributeType.INT);
+        } else {
+            acType = atNodes.getColumn("type");
+        }
+
         StringBuilder type;
         boolean atLeastOneType = false;
 
@@ -508,6 +520,9 @@ public class ExcelParser {
             String targetNode = e.split("\\|")[1];
             edge = container.factory().newEdgeDraft();
             idEdge = idEdge + 1;
+            while (container.edgeExists(String.valueOf(idEdge))) {
+                idEdge++;
+            }
             edge.setSource(container.getNode(sourceNode));
             edge.setTarget(container.getNode(targetNode));
             edge.setWeight((float) edges.count(e));

@@ -4,7 +4,7 @@ License for all plugins: [GPL v3](https://github.com/seinecle/My-Plugins-for-Gep
 
 In this repository are listed the plugins I created for Gephi. See the [Gephi Marketplace](https://marketplace.gephi.org/) for the ready-to-use versions of these plugins.
 
-##1. Alphabetical Sorter
+##1. Alphabetical Sorter (2012)
 This plugin is helpful to neatly sort and put apart isolated nodes floating around, before an export to SVG or PNG.  
 See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/alphabetical-sorter/) for details.  
 
@@ -34,6 +34,10 @@ See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/give-color-to-n
 ##6. Scientometrics Overlay Toolkit (2013)
 Overlays bibliographical references onto a map of science, a la [Loet Leydesdorf et al](http://www.leydesdorff.net/overlaytoolkit/).  
 This plugin works but is not finalized. Not available on the Gephi Marketplace, but please do contact me if you'd need to use it.
+
+
+##7. Gephi Similarity Computer (2014)
+Creates a network based on the similarity between entities. Reads a csv file containing a list of entities with their features, and creates a network that is directly imported into Gephi.  
 
 
 ###Citing any of these plugins in a publication
