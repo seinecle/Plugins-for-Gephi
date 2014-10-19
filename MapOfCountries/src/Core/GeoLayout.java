@@ -103,7 +103,7 @@ public class GeoLayout implements Layout {
 
             List<Node> nodesList = new ArrayList();
             for (Node n : graph.getNodes().toArray()) {
-                if (n.getNodeData().getLabel().equals("background_map_node")) {
+                if (n.getAttributes().getValue("background_map").equals(true)) {
                     nodesList.add(n);
                 }
             }

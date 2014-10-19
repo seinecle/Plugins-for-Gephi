@@ -70,7 +70,7 @@ public class ShapeFileReader {
 
         //removing previous map
         for (Node n : gr.getNodes().toArray()) {
-            if (n.getNodeData().getLabel().equals("background_map_node")) {
+            if (n.getAttributes().getValue("background_map").equals(true)) {
                 gr.removeNode(n);
             }
         }
@@ -127,7 +127,6 @@ public class ShapeFileReader {
                     String lat = fields[i].split(":")[1].split(" ")[1].trim();
                     String lng = fields[i].split(":")[1].split(" ")[0].trim();
                     node = gm.factory().newNode(nodeId);
-                    node.getNodeData().setLabel("background_map_node");
                     node.getNodeData().setSize(0f);
                     node.getAttributes().setValue("background_map", true);
                     node.getAttributes().setValue("lat", Double.valueOf(lat));
