@@ -52,18 +52,17 @@ import java.util.Set;
  */
 public class Utils {
 
-    public List<String> getListOfLinks(String[] arrayOfObjects, boolean selfLoopsReomoved) {
+    public List<String> getListOfLinks(String[] arrayOfObjects, boolean selfLoopsRemoved) {
         List<String> listObjects = new ArrayList();
 
-        if (selfLoopsReomoved) {
+        if (selfLoopsRemoved) {
             Set<String> setObjects = new HashSet();
             setObjects.addAll(Arrays.asList(arrayOfObjects));
             listObjects.addAll(setObjects);
-        }
-        else{
+        } else {
             listObjects.addAll(Arrays.asList(arrayOfObjects));
         }
-            
+
         List<String> listPairs = new ArrayList();
         Iterator<String> listIterator1 = listObjects.listIterator();
         Iterator<String> listIterator2;
@@ -74,10 +73,12 @@ public class Utils {
             listIterator2 = listObjects.listIterator(count++);
             while (listIterator2.hasNext()) {
                 String object2 = listIterator2.next().trim();
-                if (object2.compareTo(object1) > 0) {
-                    listPairs.add(object2 + "|" + object1);
-                } else {
-                    listPairs.add(object1 + "|" + object2);
+                if (!object2.trim().isEmpty() & !object1.trim().isEmpty()) {
+                    if (object2.compareTo(object1) > 0) {
+                        listPairs.add(object2 + "|" + object1);
+                    } else {
+                        listPairs.add(object1 + "|" + object2);
+                    }
                 }
             }
         }

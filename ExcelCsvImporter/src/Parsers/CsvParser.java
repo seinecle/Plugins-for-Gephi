@@ -117,7 +117,7 @@ public class CsvParser {
 
         } catch (FileNotFoundException ex) {
             Exceptions.printStackTrace(ex);
-        } 
+        }
     }
 
     public String[] getHeaders() throws IOException {
@@ -187,8 +187,10 @@ public class CsvParser {
             }
             for (String node : firstAgentSplit) {
                 node = node.trim();
-                nodesFirst.add(node);
-                nodes.add(node);
+                if (!node.isEmpty()) {
+                    nodesFirst.add(node);
+                    nodes.add(node);
+                }
             }
 
             if (!oneTypeOfAgent) {
@@ -201,8 +203,10 @@ public class CsvParser {
                 }
                 for (String node : secondAgentSplit) {
                     node = node.trim();
-                    nodesSecond.add(node);
-                    nodes.add(node);
+                    if (!node.isEmpty()) {
+                        nodesSecond.add(node);
+                        nodes.add(node);
+                    }
                 }
             } else {
                 secondAgentSplit = null;
@@ -215,7 +219,9 @@ public class CsvParser {
                 for (String x : firstAgentSplit) {
                     for (String xx : secondAgentSplit) {
                         if (!(MyFileImporter.removeSelfLoops & x.equals(xx))) {
-                            edges.add(x.trim() + "|" + xx.trim());
+                            if (!x.trim().isEmpty() & !x.trim().isEmpty()) {
+                                edges.add(x.trim() + "|" + xx.trim());
+                            }
                         }
                     }
                 }
@@ -234,7 +240,7 @@ public class CsvParser {
         AttributeColumn acType = atNodes.addColumn("type", AttributeType.STRING);
         StringBuilder type;
         boolean atLeastOneType = false;
-        
+
         for (String n : nodes.elementSet()) {
             node = container.factory().newNodeDraft();
             node.setId(n);
@@ -253,13 +259,13 @@ public class CsvParser {
             }
             node.addAttributeValue(acType, type);
             container.addNode(node);
-       }
+        }
 
         //loop for edges
         Integer idEdge = 0;
         EdgeDraft edge;
         for (String e : edges.elementSet()) {
-
+//            System.out.println("edge: " + e);
             String sourceNode = e.split("\\|")[0].trim();
             String targetNode = e.split("\\|")[1].trim();
 

@@ -285,9 +285,11 @@ public class ExcelParser {
             }
             for (String node : firstAgentSplit) {
                 node = node.trim();
-                nodesFirst.add(node);
-                nodes.add(node);
-                nodesCurrentLine.add(node);
+                if (!node.isEmpty()) {
+                    nodesFirst.add(node);
+                    nodes.add(node);
+                    nodesCurrentLine.add(node);
+                }
             }
 
             if (!oneTypeOfAgent) {
@@ -299,10 +301,12 @@ public class ExcelParser {
                     secondAgentSplit[0] = secondAgent;
                 }
                 for (String node : secondAgentSplit) {
-                    node = node.trim();
-                    nodesSecond.add(node);
-                    nodes.add(node);
-                    nodesCurrentLine.add(node);
+                    if (!node.isEmpty()) {
+                        node = node.trim();
+                        nodesSecond.add(node);
+                        nodes.add(node);
+                        nodesCurrentLine.add(node);
+                    }
                 }
             } else {
                 secondAgentSplit = null;
@@ -430,15 +434,17 @@ public class ExcelParser {
                 for (String x : firstAgentSplit) {
                     for (String xx : secondAgentSplit) {
                         if (!(MyFileImporter.removeSelfLoops & x.equals(xx))) {
-                            edge = x.trim() + "|" + xx.trim();
-                            edges.add(edge);
-                            if (interval != null) {
-                                Set<String> intervals = edgeAndIntervals.get(edge);
-                                if (intervals == null) {
-                                    intervals = new TreeSet();
+                            if (!x.trim().isEmpty() & !xx.trim().isEmpty()) {
+                                edge = x.trim() + "|" + xx.trim();
+                                edges.add(edge);
+                                if (interval != null) {
+                                    Set<String> intervals = edgeAndIntervals.get(edge);
+                                    if (intervals == null) {
+                                        intervals = new TreeSet();
+                                    }
+                                    intervals.add(interval);
+                                    edgeAndIntervals.put(edge, intervals);
                                 }
-                                intervals.add(interval);
-                                edgeAndIntervals.put(edge, intervals);
                             }
                         }
                     }
