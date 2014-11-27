@@ -42,9 +42,9 @@ Creates a network based on the similarity between entities. Reads a csv file con
 
 ###Citing any of these plugins in a publication
 Please reference these plugins in your publications when making use of them. Citation format is:  
-Levallois, Clement [year of release of the plugin]. [Plugin name], My-Plugins-For-Gephi, DOI: http://dx.doi.org/10.5281/zenodo.11812    
+Levallois, Clement [year of release of the plugin]. [Plugin name], Plugins-For-Gephi, DOI: http://dx.doi.org/10.5281/zenodo.11812    
 *Example:*  
-Levallois, Clement (2013). Excel/csv converter to network, My-Plugins-For-Gephi, DOI: http://dx.doi.org/10.5281/zenodo.11812  
+Levallois, Clement (2013). Excel/csv converter to network, Plugins-For-Gephi, DOI: http://dx.doi.org/10.5281/zenodo.11812  
   
 Any feedback, feature requests and bug reports are welcome!  
 Please open an issue here on Github or contact me through http://www.clementlevallois.net
