@@ -64,13 +64,14 @@ public class ShapeFileReader {
 
     public Graph read(Graph gr, String country, String subregion, String region) throws IOException {
 
-
         regionsCodeLoader();
         subregionsCodeLoader();
 
         //removing previous map
         for (Node n : gr.getNodes().toArray()) {
-            if (n.getAttributes().getValue("background_map").equals(true)) {
+            if (n.getAttributes().getValue("background_map") == null) {
+            continue;
+            } else if (n.getAttributes().getValue("background_map").equals(true)) {
                 gr.removeNode(n);
             }
         }
@@ -119,7 +120,6 @@ public class ShapeFileReader {
                     continue;
                 }
             }
-
 
             for (int i = 3; i < fields.length; i++) {
                 if (fields[i].startsWith("node")) {

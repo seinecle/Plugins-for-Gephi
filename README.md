@@ -32,13 +32,19 @@ Reads a node attribute that contains RGB or #hex values, and colors nodes accord
 See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/give-color-to-nodes/) for details.
 
 ##6. Scientometrics Overlay Toolkit (2013)
+
 Overlays bibliographical references onto a map of science, a la [Loet Leydesdorf et al](http://www.leydesdorff.net/overlaytoolkit/).  
 This plugin works but is not finalized. Not available on the Gephi Marketplace, but please do contact me if you'd need to use it.
 
-
 ##7. Gephi Similarity Computer (2014)
+
 Creates a network based on the similarity between entities. Reads a csv file containing a list of entities with their features, and creates a network that is directly imported into Gephi.  
 [See the Gephi Marketplace for details](https://marketplace.gephi.org/plugin/similarity-computer/).  
+
+##8. Give colors to your edges (2015)
+
+Reads an edge attribute that contains RGB or #hex values, and colors edges accordingly.
+See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/give-colors-to-edges/) for details.
 
 ###Citing any of these plugins in a publication
 Please reference these plugins in your publications when making use of them. Citation format is:  

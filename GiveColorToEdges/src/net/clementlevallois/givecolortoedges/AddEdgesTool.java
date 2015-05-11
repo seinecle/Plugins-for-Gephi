@@ -39,7 +39,7 @@
 
  Portions Copyrighted 2011 Gephi Consortium.
  */
-package net.clementlevallois.givecolortonodes;
+package net.clementlevallois.givecolortoedges;
 
 import java.awt.Color;
 import javax.swing.Icon;
@@ -48,6 +48,7 @@ import javax.swing.JPanel;
 import org.gephi.data.attributes.api.AttributeColumn;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
+import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
@@ -86,14 +87,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Mathieu Bastian
  */
 @ServiceProvider(service = Tool.class)
-public class AddNodesTool implements Tool {
+public class AddEdgesTool implements Tool {
 
-    private final AddNodesToolUI ui = new AddNodesToolUI();
+    private final AddEdgesToolUI ui = new AddEdgesToolUI();
     private AttributeColumn color;
 
     @Override
     public void select() {
-        NotifyDescriptor d = new NotifyDescriptor.Message("Trying to find a column containing \"color\"  or \"colour\" in your nodes attributes, it will then color the nodes accordingly");
+        NotifyDescriptor d = new NotifyDescriptor.Message("Trying to find a column containing \"color\" or \"colour\"in your edges attributes, it will then color the edges accordingly");
         DialogDisplayer.getDefault().notify(d);
 
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -108,32 +109,32 @@ public class AddNodesTool implements Tool {
         Graph graph = graphModel.getGraph();
 
         AttributeModel attModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
-        for (AttributeColumn c : attModel.getNodeTable().getColumns()) {
+        for (AttributeColumn c : attModel.getEdgeTable().getColumns()) {
             if (c.getId().toLowerCase().contains("color")||c.getId().toLowerCase().contains("colour")) {
                 color = c;
                 break;
             }
         }
         if (color == null) {
-            d = new NotifyDescriptor.Message("No node attribute containing \"color\" or \"colour\" could be found");
+            d = new NotifyDescriptor.Message("No edge attribute containing \"color\" or \"colour\" could be found");
             DialogDisplayer.getDefault().notify(d);
             return;
         }
 
         Color hex;
 
-        for (Node node : graph.getNodes().toArray()) {
-            String colorString = (String) node.getNodeData().getAttributes().getValue(color.getIndex());
+        for (Edge edge : graph.getEdges().toArray()) {
+            String colorString = (String) edge.getEdgeData().getAttributes().getValue(color.getIndex());
             if (colorString.contains(",")) {
                 String[] RGB = colorString.split(",");
-                node.getNodeData().setR(Float.valueOf(RGB[0])/255f);
-                node.getNodeData().setG(Float.valueOf(RGB[1])/255f);
-                node.getNodeData().setB(Float.valueOf(RGB[2])/255f);
+                edge.getEdgeData().setR(Float.valueOf(RGB[0])/255f);
+                edge.getEdgeData().setG(Float.valueOf(RGB[1])/255f);
+                edge.getEdgeData().setB(Float.valueOf(RGB[2])/255f);
             } else if (colorString.contains("#")) {
                 hex = Color.decode(colorString);
-                node.getNodeData().setR(Float.valueOf(hex.getRed())/255);
-                node.getNodeData().setG(Float.valueOf(hex.getGreen())/255);
-                node.getNodeData().setB(Float.valueOf(hex.getBlue())/255);
+                edge.getEdgeData().setR((float) hex.getRed()/255);
+                edge.getEdgeData().setG((float) hex.getGreen()/255);
+                edge.getEdgeData().setB((float) hex.getBlue()/255);
             } else {
                 d = new NotifyDescriptor.Message("No rgb or hex color format detected in " + color.getTitle());
                 DialogDisplayer.getDefault().notify(d);
@@ -166,7 +167,7 @@ public class AddNodesTool implements Tool {
         return ToolSelectionType.SELECTION;
     }
 
-    private static class AddNodesToolUI implements ToolUI {
+    private static class AddEdgesToolUI implements ToolUI {
 
         @Override
         public JPanel getPropertiesBar(Tool tool) {
@@ -182,12 +183,12 @@ public class AddNodesTool implements Tool {
 
         @Override
         public String getName() {
-            return "Color nodes";
+            return "Color edges";
         }
 
         @Override
         public String getDescription() {
-            return "Color nodes based on a RGB or hex color attribute";
+            return "Color edges based on a RGB or hex color attribute";
         }
 
         @Override
