@@ -61,22 +61,25 @@ public class ShapeFileReader {
 
     private Map<String, String> regionCodes = new HashMap();
     private Map<String, String> subregionCodes = new HashMap();
+    private Map<String, String> districtCodes = new HashMap();
 
-    public Graph read(Graph gr, String country, String subregion, String region) throws IOException {
+    public Graph read(Graph gr, String country, String subregion, String region, String district) throws IOException {
 
         regionsCodeLoader();
         subregionsCodeLoader();
+        districtsCodeLoader();
 
         //removing previous map
         for (Node n : gr.getNodes().toArray()) {
             if (n.getAttributes().getValue("background_map") == null) {
-            continue;
+                continue;
             } else if (n.getAttributes().getValue("background_map").equals(true)) {
                 gr.removeNode(n);
             }
         }
 
         InputStream shapes = ShapeFileReader.class.getResourceAsStream("/resources/coordinates.txt");
+        InputStream shapesDistricts = ShapeFileReader.class.getResourceAsStream("/resources/Australian states.csv");
         GraphController gc = Lookup.getDefault().lookup(GraphController.class);
         GraphModel gm = gc.getModel();
 
@@ -88,6 +91,7 @@ public class ShapeFileReader {
         Edge edge;
 
         BufferedReader br = new BufferedReader(new InputStreamReader(shapes));
+        BufferedReader brDistricts = new BufferedReader(new InputStreamReader(shapesDistricts));
 
         String line;
         while ((line = br.readLine()) != null) {
@@ -96,12 +100,10 @@ public class ShapeFileReader {
             String regionName = fields[1].split(":")[1];
             String subregionName = fields[2].split(":")[1];
             System.out.println("country Name: \"" + countryName + "\"");
+
             if (countryName == null || countryName.isEmpty()) {
                 continue;
             }
-//            if (!region.equals("World") && !countryName.equals(region)) {
-//                continue;
-//            }
             if (!subregion.equals("No subregion")) {
                 if (!subregionName.equals(subregionCodes.get(subregion))) {
                     continue;
@@ -119,6 +121,9 @@ public class ShapeFileReader {
                 if (!country.equals("World") & !countryName.equals(country)) {
                     continue;
                 }
+            }
+            if (!district.equals("No district")) {
+                continue;
             }
 
             for (int i = 3; i < fields.length; i++) {
@@ -143,6 +148,45 @@ public class ShapeFileReader {
             }
         }
         br.close();
+
+        if (district.equals("No district")) {
+            return gr;
+        }
+
+        while ((line = brDistricts.readLine()) != null) {
+            String[] fields = line.split("\t");
+            String countryName = fields[0].split(":")[1];
+            String regionName = fields[1].split(":")[1];
+            String subregionName = fields[2].split(":")[1];
+            String districtName = fields[3].split(":")[1];
+            System.out.println("country Name: \"" + countryName + "\"");
+
+            if (!districtName.equals(districtCodes.get(district))) {
+                continue;
+            }
+
+            for (int i = 4; i < fields.length; i++) {
+                if (fields[i].startsWith("node")) {
+                    String nodeId = fields[i].split(":")[0].replace("node", "").trim();
+                    String lat = fields[i].split(":")[1].split(" ")[1].trim();
+                    String lng = fields[i].split(":")[1].split(" ")[0].trim();
+                    node = gm.factory().newNode(nodeId);
+                    node.getNodeData().setSize(0f);
+                    node.getAttributes().setValue("background_map", true);
+                    node.getAttributes().setValue("lat", Double.valueOf(lat));
+                    node.getAttributes().setValue("lng", Double.valueOf(lng));
+                    node.getNodeData().setFixed(true);
+                    gr.addNode(node);
+                }
+                if (fields[i].startsWith("edge")) {
+                    String sourceNode = fields[i].trim().split(":")[1].trim().split(" ")[0].trim();
+                    String targetNode = fields[i].trim().split(":")[1].trim().split(" ")[1].trim();
+                    edge = gm.factory().newEdge(gr.getNode(sourceNode), gr.getNode(targetNode), 1f, false);
+                    gr.addEdge(edge);
+                }
+            }
+        }
+        brDistricts.close();
         return gr;
 
     }
@@ -155,6 +199,20 @@ public class ShapeFileReader {
         regionCodes.put("Europe", "150");
         regionCodes.put("Europe (without Russia)", "150");
         regionCodes.put("Oceania", "9");
+
+    }
+
+    private void districtsCodeLoader() {
+
+        districtCodes.put("Australia_New South Wales", "1");
+        districtCodes.put("Australia_Victoria", "2");
+        districtCodes.put("Australia_Queensland", "3");
+        districtCodes.put("Australia_South Australia", "4");
+        districtCodes.put("Australia_Western Australia", "5");
+        districtCodes.put("Australia_Tasmania", "6");
+        districtCodes.put("Australia_Northern Territory", "7");
+        districtCodes.put("Australia_Australian Capital Territory", "8");
+        districtCodes.put("Australia_Other Territories", "9");
 
     }
 
