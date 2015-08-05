@@ -17,7 +17,8 @@ See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/force-atlas-3d/
 
 ##3. Maps of Countries (2013)
 
-Take a country, continent or the entire world map and display in with Gephi. Useful to serve as a background for geolocalized networks.
+Take a country, continent or the entire world map and display it with Gephi. Useful to serve as a background for geolocalized networks.
+Latest version: 1.4.1 (2015). Includes Australian states and allows for the control of the thickness of the lines.
 See the [Gephi Marketplace](https://marketplace.gephi.org/plugin/maps-of-countries/) for details.  
 
 
